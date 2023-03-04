@@ -81,9 +81,10 @@ function getTensThousands(a) {
 
 function numberToText(number) {
   let numToString = String(number);
+
   switch (numToString.length) {
     case 1: {
-      return getOneDigit(numToString[0]);
+      return getOneDigit(+numToString);
     }
 
     case 2: {
@@ -109,58 +110,28 @@ function numberToText(number) {
             numToString[1]
           )} ${getOneDigit(numToString[2])}`;
     }
-
     case 4: {
-      return number % 1000 === 0
-        ? getThousand(numToString[0])
-        : number % 100 === 0
-        ? `${getThousand(numToString[0])} ${getHundreds(numToString[1])}`
-        : number % 10 === 0
-        ? `${getThousand(numToString[0])} ${getHundreds(
-            numToString[1]
-          )} ${getTens(numToString[2])}`
-        : numToString[2] === "0"
-        ? `${getThousand(numToString[0])} ${getHundreds(
-            numToString[1]
-          )} ${getOneDigit(numToString[3])}`
-        : numToString[2] === "1"
-        ? `${getThousand(numToString[0])} ${getHundreds(
-            numToString[1]
-          )} ${getElevenToNineteen(numToString[3])}`
-        : `${getThousand(numToString[0])} ${getHundreds(
-            numToString[1]
-          )} ${getTens(numToString[2])} ${getOneDigit(numToString[3])}`;
+      const thousand = numToString.slice(0, 1);
+      const remaining = numToString.slice(1);
+      return `${getThousand(+thousand)} ${numberToText(remaining)}`;
     }
+    case 5: {
+      const twoDigitsThousand = numToString.slice(0, 2);
+      const remaining = numToString.slice(2);
 
-    case 5:
-      return number % 10000 === 0
-        ? getTensThousands(numToString[0])
-        : number % 1000 === 0
-        ? `${getTensThousands(numToString[0])} ${getThousand(numToString[1])}`
-        : number % 100 === 0
-        ? `${getTensThousands(numToString[0])} ${getThousand(
-            numToString[1]
-          )} ${getHundreds(numToString[2])}`
-        : number % 10 === 0
-        ? `${getTensThousands(numToString[0])} ${getThousand(
-            numToString[1]
-          )} ${getHundreds(numToString[2])} ${getTens(numToString[3])}`
-        : numToString[3] === "0"
-        ? `${getTensThousands(numToString[0])} ${getThousand(
-            numToString[1]
-          )} ${getHundreds(numToString[2])} ${getOneDigit(numToString[4])}`
-        : numToString[3] === "1"
-        ? `${getTensThousands(numToString[0])} ${getThousand(
-            numToString[1]
-          )} ${getHundreds(numToString[2])} ${getElevenToNineteen(
-            numToString[4]
+      return twoDigitsThousand % 10 === 0 &&
+        remaining[0] !== "0" &&
+        remaining[1] !== "0"
+        ? `${getTens(twoDigitsThousand[0])} тысяч ${numberToText(remaining)}`
+        : twoDigitsThousand[0] === "1"
+        ? `${getElevenToNineteen(twoDigitsThousand[1])} тысяч ${numberToText(
+            remaining
           )}`
-        : `${getTensThousands(numToString[0])} ${getThousand(
-            numToString[1]
-          )} ${getHundreds(numToString[2])} ${getTens(
-            numToString[3]
-          )} ${getOneDigit(numToString[4])}`;
+        : `${getTens(twoDigitsThousand[0])} ${getOneDigit(
+            twoDigitsThousand[1]
+          )} тысяч ${numberToText(remaining)}`;
+    }
   }
 }
 
-console.log(numberToText(70975));
+console.log(numberToText(41506));
