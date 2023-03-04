@@ -113,25 +113,23 @@ function numberToText(number) {
     case 4: {
       const thousand = numToString.slice(0, 1);
       const remaining = numToString.slice(1);
-      return `${getThousand(+thousand)} ${numberToText(remaining)}`;
+      return `${getThousand(+thousand)} ${numberToText(+remaining)}`;
     }
     case 5: {
       const twoDigitsThousand = numToString.slice(0, 2);
       const remaining = numToString.slice(2);
 
-      return twoDigitsThousand % 10 === 0 &&
-        remaining[0] !== "0" &&
-        remaining[1] !== "0"
-        ? `${getTens(twoDigitsThousand[0])} тысяч ${numberToText(remaining)}`
+      return twoDigitsThousand % 10 === 0
+        ? `${getTens(twoDigitsThousand[0])} тысяч ${numberToText(+remaining)}`
         : twoDigitsThousand[0] === "1"
         ? `${getElevenToNineteen(twoDigitsThousand[1])} тысяч ${numberToText(
-            remaining
+            +remaining
           )}`
         : `${getTens(twoDigitsThousand[0])} ${getOneDigit(
             twoDigitsThousand[1]
-          )} тысяч ${numberToText(remaining)}`;
+          )} тысяч ${numberToText(+remaining)}`;
     }
   }
 }
 
-console.log(numberToText(41506));
+console.log(numberToText(99091));
