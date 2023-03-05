@@ -9,8 +9,8 @@ function numPow(a, b) {
 // 2
 // [1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]] => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\
 
-let newArr = [];
 function concatArr(arr) {
+  let newArr = [];
   arr.forEach((el) => {
     typeof el === "number" ? newArr.push(el) : concatArr(el);
   });
@@ -66,7 +66,7 @@ const elevenToNineteen = [
 ];
 
 function numberToText(number) {
-  let numToString = String(number);
+  const numToString = String(number);
 
   if (numToString.length === 1) {
     return oneDigit[+numToString];
@@ -87,3 +87,5 @@ function numberToText(number) {
       +numToString.slice(-3)
     )}`;
 }
+
+console.log(numberToText(579012));
