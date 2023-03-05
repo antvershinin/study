@@ -1,5 +1,23 @@
 "use strict";
 
+// 1
+function numPow(a, b) {
+  if (b === 1) return a;
+  else return a * numPow(a, b - 1);
+}
+
+// 2
+// [1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]] => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\
+
+let newArr = [];
+function concatArr(arr) {
+  arr.forEach((el) => {
+    typeof el === "number" ? newArr.push(el) : concatArr(el);
+  });
+  return newArr;
+}
+
+// 3
 const oneDigit = [
   "ноль",
   "один",
@@ -47,89 +65,25 @@ const elevenToNineteen = [
   "девятнадцать",
 ];
 
-function getOneDigit(a) {
-  return oneDigit[a];
-}
-
-function getElevenToNineteen(a) {
-  return elevenToNineteen[a - 1];
-}
-
-function getTens(a) {
-  return tens[a - 1];
-}
-
-function getHundreds(a) {
-  return hundreds[a - 1];
-}
-
-function getThousand(a) {
-  return a === "1"
-    ? `одна тысяча`
-    : a === "2"
-    ? `две тысячи`
-    : a === "3"
-    ? `три тысячи`
-    : a === "4"
-    ? `четыре тысячи`
-    : `${getOneDigit(a)} тысяч`;
-}
-
-function getTensThousands(a) {
-  return `${tens[a - 1]} тысяч`;
-}
-
 function numberToText(number) {
   let numToString = String(number);
 
-  switch (numToString.length) {
-    case 1: {
-      return getOneDigit(+numToString);
-    }
-
-    case 2: {
-      return number % 10 === 0
-        ? getTens(numToString[0])
-        : numToString[0] === "1"
-        ? getElevenToNineteen(numToString[1])
-        : `${getTens(numToString[0])} ${getOneDigit(numToString[1])}`;
-    }
-
-    case 3: {
-      return number % 100 === 0
-        ? getHundreds(numToString[0])
-        : number % 10 === 0
-        ? `${getHundreds(numToString[0])} ${getTens(numToString[1])}`
-        : numToString[1] === "0"
-        ? `${getHundreds(numToString[0])} ${getOneDigit(numToString[2])}`
-        : numToString[1] === "1"
-        ? `${getHundreds(numToString[0])} ${getElevenToNineteen(
-            numToString[2]
-          )}`
-        : `${getHundreds(numToString[0])} ${getTens(
-            numToString[1]
-          )} ${getOneDigit(numToString[2])}`;
-    }
-    case 4: {
-      const thousand = numToString.slice(0, 1);
-      const remaining = numToString.slice(1);
-      return `${getThousand(+thousand)} ${numberToText(+remaining)}`;
-    }
-    case 5: {
-      const twoDigitsThousand = numToString.slice(0, 2);
-      const remaining = numToString.slice(2);
-
-      return twoDigitsThousand % 10 === 0
-        ? `${getTens(twoDigitsThousand[0])} тысяч ${numberToText(+remaining)}`
-        : twoDigitsThousand[0] === "1"
-        ? `${getElevenToNineteen(twoDigitsThousand[1])} тысяч ${numberToText(
-            +remaining
-          )}`
-        : `${getTens(twoDigitsThousand[0])} ${getOneDigit(
-            twoDigitsThousand[1]
-          )} тысяч ${numberToText(+remaining)}`;
-    }
-  }
+  if (numToString.length === 1) {
+    return oneDigit[+numToString];
+  } else if (numToString.length === 2) {
+    return number % 10 === 0
+      ? tens[numToString[0] - 1]
+      : numToString[0] === "1"
+      ? elevenToNineteen[numToString[1] - 1]
+      : `${tens[numToString[0] - 1]} ${oneDigit[numToString[1]]}`;
+  } else if (numToString.length === 3) {
+    return number % 100 === 0
+      ? hundreds[numToString[0] - 1]
+      : `${hundreds[+numToString.slice(0, 1) - 1]} ${numberToText(
+          +numToString.slice(1)
+        )}`;
+  } else
+    return `${numberToText(+numToString.slice(0, -3))} тысяч ${numberToText(
+      +numToString.slice(-3)
+    )}`;
 }
-
-console.log(numberToText(99091));
